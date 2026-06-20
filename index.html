@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Oristep - Premium Origami Lab</title>
+    <meta name="description" content="Oristep is a premium mobile-first origami learning app." />
+    <meta name="theme-color" content="#F9F7F4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+
+    <!-- Font preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Capacitor: resolve relative fetch URLs to absolute for WebView compatibility -->
+    <script>
+      const originalFetch = window.fetch;
+      window.fetch = async function(...args) {
+        try {
+          return await originalFetch.apply(this, args);
+        } catch (e) {
+          if (args[0] && typeof args[0] === 'string' && args[0].startsWith('/')) {
+            const url = new URL(args[0], window.location.origin);
+            args[0] = url.toString();
+            return await originalFetch.apply(this, args);
+          }
+          throw e;
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <!-- FOUC Prevention: Apply dark class before React mounts to avoid white flash -->
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem('oristep:theme');
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+- generic [ref=e4]:
+  - button "DEV CLEAR" [ref=e6]
+  - generic [ref=e399]:
+    - generic [ref=e400]:
+      - button [ref=e401]:
+        - img [ref=e402]
+      - generic [ref=e405]:
+        - generic [ref=e406]: Paper Crane
+        - generic [ref=e407]:
+          - text: Step 1
+          - generic [ref=e408]: of 10
+    - generic [ref=e413]:
+      - generic [ref=e416]:
+        - generic [ref=e418]: "1"
+        - generic [ref=e419]: Diagram Placeholder
+      - generic [ref=e420]:
+        - heading "Initial Fold" [level=2] [ref=e421]
+        - paragraph [ref=e422]: Start with a square piece of paper, colored side up. Fold in half diagonally to form a triangle.
+        - button "Need Help?" [ref=e424]:
+          - img [ref=e425]
+          - text: Need Help?
+    - generic [ref=e428]:
+      - button [disabled] [ref=e429]:
+        - img [ref=e430]
+      - button "Mark Step Done" [ref=e432]:
+        - text: Mark Step Done
+        - img [ref=e433]

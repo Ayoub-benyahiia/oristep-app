@@ -1,0 +1,21 @@
+- generic [ref=e4]:
+  - button "DEV CLEAR" [ref=e6]
+  - generic [ref=e7]:
+    - button "Back" [ref=e20]
+    - generic [ref=e25]:
+      - generic [ref=e26]:
+        - heading "What is your experience level?" [level=2] [ref=e27]
+        - paragraph [ref=e28]: This helps us recommend the perfect starting point.
+        - generic [ref=e29]:
+          - button "Beginner New to origami or looking for simple folds." [ref=e30]:
+            - generic [ref=e31]:
+              - heading "Beginner" [level=3] [ref=e32]
+              - img [ref=e34]
+            - paragraph [ref=e37]: New to origami or looking for simple folds.
+          - button "Intermediate Comfortable with basic bases and squashes." [ref=e38]:
+            - heading "Intermediate" [level=3] [ref=e40]
+            - paragraph [ref=e42]: Comfortable with basic bases and squashes.
+          - button "Advanced Ready for complex sinks and multiple folds." [ref=e43]:
+            - heading "Advanced" [level=3] [ref=e45]
+            - paragraph [ref=e47]: Ready for complex sinks and multiple folds.
+      - button "Continue" [ref=e48]

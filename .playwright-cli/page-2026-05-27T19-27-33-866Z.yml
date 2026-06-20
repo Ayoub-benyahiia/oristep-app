@@ -1,0 +1,18 @@
+- generic [ref=e4]:
+  - button "DEV CLEAR" [ref=e6]
+  - generic [ref=e65]:
+    - generic [ref=e66]:
+      - generic [ref=e67]: Your Recommended Fold
+      - generic [ref=e68]:
+        - generic [ref=e71]: Beginner
+        - generic [ref=e72]:
+          - heading "Fox Face" [level=3] [ref=e73]
+          - paragraph [ref=e74]: A very simple face model that is easy to teach to children.
+          - generic [ref=e75]:
+            - generic [ref=e76]: 5 min
+            - generic [ref=e78]: 5 steps
+    - generic [ref=e79]:
+      - button "Start Folding" [ref=e80]:
+        - text: Start Folding
+        - img [ref=e81]
+      - button "Explore Library" [ref=e83]

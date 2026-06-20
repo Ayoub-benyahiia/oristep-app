@@ -1,0 +1,18 @@
+- generic [ref=e4]:
+  - button "DEV CLEAR" [ref=e6]
+  - generic [ref=e7]:
+    - button "Back" [ref=e20]
+    - generic [ref=e50]:
+      - generic [ref=e51]:
+        - heading "What do you want to fold?" [level=2] [ref=e52]
+        - paragraph [ref=e53]: Pick as many as you like. We'll tailor your library.
+        - generic [ref=e54]:
+          - button "Animals" [active] [ref=e55]:
+            - heading "Animals" [level=3] [ref=e56]
+          - button "Objects" [ref=e57]:
+            - heading "Objects" [level=3] [ref=e58]
+          - button "Nature" [ref=e59]:
+            - heading "Nature" [level=3] [ref=e60]
+          - button "Modular" [ref=e61]:
+            - heading "Modular" [level=3] [ref=e62]
+      - button "See Recommendation" [ref=e63]

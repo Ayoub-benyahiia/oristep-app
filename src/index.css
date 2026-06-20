@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+  --color-paper-light: #F9F7F4;   /* Warm off-white page background */
+  --color-paper: #FFFFFF;         /* Pure white for card surfaces */
+  --color-paper-dark: #F9F8F4;    /* Slightly darker surface */
+  --color-crease-light: #EBE6DE;  /* Light dividers */
+  --color-crease: #E1DFD5;        /* Borders */
+  --color-ink-light: #7E796D;     /* Muted secondary text */
+  --color-ink: #2D2D2D;           /* Primary near-black text */
+  --color-ink-dark: #1A1A1A;
+  --color-muted: #A39E93;
+  --color-accent-soft: #F1F0E8;   /* Warm cream helper backgrounds */
+  --color-accent: #5A5A40;        /* Premium dark olive */
+  --color-accent-dark: #474732;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+    --color-paper-light: #09090b;   /* zinc-950 — page background */
+    --color-paper: #18181b;         /* zinc-900 — card surfaces */
+    --color-paper-dark: #27272a;    /* zinc-800 — elevated surfaces */
+    --color-crease-light: #27272a;  /* zinc-800 — subtle borders */
+    --color-crease: #3f3f46;        /* zinc-700 — standard borders */
+    --color-ink-light: #a1a1aa;     /* zinc-400 — muted text */
+    --color-ink: #f4f4f5;           /* zinc-100 — primary text */
+    --color-ink-dark: #e4e4e7;      /* zinc-200 — secondary text */
+    --color-muted: #71717a;         /* zinc-500 — disabled/placeholder */
+    --color-accent-soft: #2a2a1a;   /* dark olive tint */
+    --color-accent: #8C8C5A;        /* luminous olive for dark theme */
+    --color-accent-dark: #a8a870;   /* hover state */
+  }
+
+  body {
+    @apply bg-paper-light text-ink antialiased font-sans overscroll-none transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  /* Safe-area insets for Android notch / gesture nav bar */
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1.5rem); }
+  .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+  .mb-safe { margin-bottom: env(safe-area-inset-bottom, 1.5rem); }
+
+  /* Hide scrollbar cross-browser */
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+}
+
+/* Glass utility — bg-paper uses the CSS variable, so it flips in dark mode automatically */
+.glass-panel {
+  @apply bg-paper/70 backdrop-blur-md border border-crease-light shadow-sm;
+}
+.soft-shadow {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 0 3px rgba(0,0,0,0.02);
+}
+.inner-shadow-soft {
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);
+}

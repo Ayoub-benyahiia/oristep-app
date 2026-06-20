@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Oristep</string>
+    <string name="title_activity_main">Oristep</string>
+    <string name="package_name">com.oristep.app</string>
+    <string name="custom_url_scheme">com.oristep.app</string>
+</resources>
