@@ -82,9 +82,18 @@ export function Home() {
         {targetDailyFold && (
           <div className="bg-paper rounded-[2.5rem] p-5 shadow-sm border border-crease overflow-hidden group">
             <div 
-              className="w-full aspect-[4/3] rounded-[2rem] mb-5"
+              className="w-full aspect-[4/3] rounded-[2rem] mb-5 relative overflow-hidden"
               style={{ background: targetDailyFold.imagePlaceholder }}
-            />
+            >
+              {targetDailyFold.imageUrl && (
+                <img 
+                  src={targetDailyFold.imageUrl} 
+                  alt={targetDailyFold.title} 
+                  className="absolute inset-0 w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal opacity-90" 
+                  loading="lazy" 
+                />
+              )}
+            </div>
             <div className="px-2 pb-2">
               <div className="flex flex-wrap gap-2 mb-3">
                 <span className="text-[9px] uppercase tracking-widest font-bold bg-paper-light border border-crease-light text-ink-light px-3 py-1 rounded-full">
@@ -134,9 +143,18 @@ export function Home() {
           <div className="relative p-6 rounded-[2.5rem] bg-paper border border-crease-light flex items-center justify-between group shadow-sm">
             <div className="flex items-center space-x-4">
               <div 
-                className="w-16 h-16 rounded-2xl shrink-0 opacity-80" 
+                className="w-16 h-16 rounded-2xl shrink-0 opacity-80 relative overflow-hidden" 
                 style={{ background: currentPattern.imagePlaceholder }}
-              />
+              >
+                {currentPattern.imageUrl && (
+                  <img 
+                    src={currentPattern.imageUrl} 
+                    alt={currentPattern.title} 
+                    className="absolute inset-0 w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal opacity-90" 
+                    loading="lazy" 
+                  />
+                )}
+              </div>
               <div>
                 <span className="inline-block px-3 py-1 bg-accent-soft text-accent text-[10px] font-bold uppercase tracking-widest rounded-full mb-2">Current Project</span>
                 <h3 className="font-heading text-xl font-semibold text-ink">{currentPattern.title}</h3>
