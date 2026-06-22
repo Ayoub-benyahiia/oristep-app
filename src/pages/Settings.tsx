@@ -265,17 +265,23 @@ export function Settings() {
               <div className="w-16 h-16 rounded-[1.5rem] bg-paper border border-crease shadow-sm flex items-center justify-center text-ink mb-8">
                  <Shield className="w-8 h-8" />
               </div>
-              <p><strong className="text-ink">Oristep loads published origami pattern content from Supabase.</strong></p>
-              <p>Mobile users do not need an account. The app uses the Android Internet permission to fetch published pattern content and folding steps from Supabase.</p>
-              <div className="bg-paper rounded-2xl p-5 border border-crease shadow-sm">
-                <h3 className="font-heading text-lg text-ink mb-3 font-semibold">Local Storage</h3>
-                <p>Progress, favorites, completed projects, onboarding preferences, paper stash, achievements, streaks, and settings stay <strong className="text-ink">locally on your device</strong> using localStorage.</p>
+              
+              <div className="space-y-6">
+                <p><strong className="text-ink block mb-1">Introduction</strong>Oristep loads published origami pattern content from Supabase. Mobile users do not need an account. The app uses the Android Internet permission to fetch published pattern content and folding steps from Supabase.</p>
+                
+                <div className="bg-paper rounded-2xl p-5 border border-crease shadow-sm space-y-2">
+                  <h3 className="font-heading text-lg text-ink font-semibold">Data Storage (Local Storage)</h3>
+                  <p>Progress, favorites, completed projects, onboarding preferences, paper stash, achievements, streaks, and settings stay locally on your device using localStorage.</p>
+                  <p>This local app data is not synced to Supabase by the mobile app. You can clear it at any time using the reset options in Settings.</p>
+                </div>
+                
+                <p><strong className="text-ink block mb-1">Third-Party Services & Ads</strong>Oristep does not include ads, analytics, tracking, payments, or mobile account login, and does not sell personal data.</p>
+                
+                <p><strong className="text-ink block mb-1">Changes to This Policy</strong>We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. <span className="opacity-80 block mt-1">(Last updated: June 2026)</span></p>
+                
+                <p><strong className="text-ink block mb-1">Contact Us</strong>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at: <a href="mailto:ouhsineabdelali@gmail.com" className="text-accent font-bold hover:underline">ouhsineabdelali@gmail.com</a>.</p>
               </div>
-              <p>This local app data is not synced to Supabase by the mobile app. You can clear it at any time using the reset options in Settings.</p>
-              <p>Oristep does not include ads, analytics, payments, or mobile account login, and does not sell personal data.</p>
-              <p className="text-sm opacity-80 pt-8 border-t border-crease-light">
-                If analytics, cloud sync, ads, accounts, payments, or additional third-party services are added later, this policy will be updated to reflect those changes.
-              </p>
+
               <div className="pt-8 pb-32">
                 <button onClick={() => setShowPrivacy(false)}
                   className="w-full py-4 bg-ink text-paper-light rounded-full font-bold tracking-widest uppercase text-xs shadow-md hover:bg-ink-dark transition-all"
