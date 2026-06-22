@@ -21,6 +21,7 @@ export async function fetchPatterns(): Promise<OrigamiPattern[]> {
 
     return patternsData.map(p => ({
       id: p.id,
+      slug: p.slug || p.id,
       title: p.title,
       category: p.category as OrigamiPattern['category'],
       difficulty: p.difficulty as OrigamiPattern['difficulty'],
@@ -30,6 +31,8 @@ export async function fetchPatterns(): Promise<OrigamiPattern[]> {
       paperTypeRecommendation: p.paper_type_recommendation,
       description: p.description,
       tags: p.tags || [],
+      isPublished: p.is_published ?? true,
+      isFeatured: p.is_featured ?? false,
       imagePlaceholder: p.image_placeholder,
       imageUrl: p.image_url,
     }));

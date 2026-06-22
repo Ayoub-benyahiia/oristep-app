@@ -23,7 +23,7 @@ export function PatternCard({ pattern, completed, progressPercentage, featured, 
   const handleActionClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate(`/fold/${pattern.id}`);
+    navigate(`/fold/${pattern.slug}`);
   };
 
   return (
@@ -31,7 +31,7 @@ export function PatternCard({ pattern, completed, progressPercentage, featured, 
       <motion.div 
         whileHover={{ y: -4 }}
         whileTap={{ scale: 0.98 }}
-        onClick={() => navigate(`/pattern/${pattern.id}`)}
+        onClick={() => navigate(`/pattern/${pattern.slug}`)}
         className={cn(
           "relative overflow-hidden rounded-[2rem] bg-paper border border-crease-light shadow-sm transition-all group flex flex-col h-full cursor-pointer",
           featured ? "aspect-[4/3]" : (showActions ? "aspect-[3/4]" : "aspect-[3/3]")
@@ -42,6 +42,15 @@ export function PatternCard({ pattern, completed, progressPercentage, featured, 
           className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
           style={{ background: pattern.imagePlaceholder }}
         />
+
+        {pattern.imageUrl && (
+          <img 
+            src={pattern.imageUrl} 
+            alt={pattern.title} 
+            className="absolute inset-0 w-full h-full object-cover opacity-90 mix-blend-multiply dark:mix-blend-normal" 
+            loading="lazy" 
+          />
+        )}
         
         {/* Gradient overlay — from-paper uses CSS var, flips in dark mode automatically */}
         <div className="absolute inset-0 bg-gradient-to-tr from-paper/90 via-paper/50 to-transparent opacity-90 pointer-events-none" />

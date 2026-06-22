@@ -113,7 +113,7 @@ export function Home() {
               </div>
 
               <Link 
-                to={`/fold/${targetDailyFold.id}`}
+                to={`/fold/${targetDailyFold.slug}`}
                 className="w-full flex items-center justify-center py-4 bg-ink text-paper-light rounded-[1.5rem] font-bold tracking-widest uppercase text-xs shadow-md hover:bg-ink-dark active:scale-[0.98] transition-all"
               >
                 {data.progress[targetDailyFold.id] && data.progress[targetDailyFold.id].currentStepIndex > 0 && !data.progress[targetDailyFold.id].completed ? "Continue Folding" : "Start Folding"}
@@ -151,7 +151,7 @@ export function Home() {
               </div>
             </div>
             <Link 
-              to={`/fold/${currentPattern.id}`}
+              to={`/fold/${currentPattern.slug}`}
               className="w-12 h-12 rounded-full bg-ink text-paper-light flex items-center justify-center hover:bg-ink-dark transition-colors shrink-0 shadow-md ml-4"
             >
               <ArrowRight className="w-5 h-5" />

@@ -7,13 +7,13 @@ import React, { Fragment } from 'react';
 import { usePaperStash } from '../context/PaperStashContext';
 
 export function PatternDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data, toggleFavorite, resetProgress, updateProgress } = useProgress();
   const { papers } = usePaperStash();
-  const { patterns } = usePatterns();
+  const { getPatternBySlug } = usePatterns();
   
-  const pattern = patterns.find(p => p.id === id);
+  const pattern = slug ? getPatternBySlug(slug) : undefined;
   
   if (!pattern) {
     return (
@@ -52,9 +52,16 @@ export function PatternDetail() {
     <div className="bg-paper-light min-h-screen pb-32">
       {/* Hero image area */}
       <div 
-        className="relative h-80 w-full"
+        className="relative h-80 w-full bg-paper"
         style={{ background: pattern.imagePlaceholder }}
       >
+        {pattern.imageUrl && (
+          <img 
+            src={pattern.imageUrl} 
+            alt={pattern.title} 
+            className="absolute inset-0 w-full h-full object-cover opacity-95" 
+          />
+        )}
         <div className="absolute top-4 w-full p-5 flex justify-between items-center z-10">
           {/* Glass buttons use bg-paper/70 — the CSS var flips to #18181b/70 in dark mode */}
           <button 
@@ -146,7 +153,7 @@ export function PatternDetail() {
 
         <div className="pt-4">
           <Link 
-            to={`/fold/${pattern.id}`}
+            to={`/fold/${pattern.slug}`}
             onClick={handleStartWithReset}
             className="w-full flex items-center justify-center py-4 bg-ink text-paper-light rounded-[1.5rem] font-bold tracking-widest uppercase text-xs shadow-lg hover:bg-ink-dark active:scale-[0.98] transition-all"
           >

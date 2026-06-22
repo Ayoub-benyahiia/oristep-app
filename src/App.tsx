@@ -97,8 +97,8 @@ function AppContent() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/browse" element={<Browse />} />
-                <Route path="/pattern/:id" element={<PatternDetail />} />
-                <Route path="/fold/:id" element={<FoldMode />} />
+                <Route path="/pattern/:slug" element={<PatternDetail />} />
+                <Route path="/fold/:slug" element={<FoldMode />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/stash" element={<PaperStash />} />

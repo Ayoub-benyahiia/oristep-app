@@ -9,12 +9,12 @@ import { OrigamiStep } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 
 export function FoldMode() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data, updateProgress } = useProgress();
-  const { patterns } = usePatterns();
+  const { getPatternBySlug } = usePatterns();
   
-  const pattern = patterns.find(p => p.id === id);
+  const pattern = slug ? getPatternBySlug(slug) : undefined;
   const progress = pattern ? data.progress[pattern.id] : null;
 
   const [viewIndex, setViewIndex] = useState(0);
@@ -135,6 +135,13 @@ export function FoldMode() {
             {viewIndex === 0 && (
               <div className="w-full aspect-[4/3] rounded-[2rem] bg-paper shadow-sm border border-crease-light relative flex flex-col pt-12 text-center overflow-hidden shrink-0">
                  <div className="absolute inset-0 opacity-[0.25]" style={{ background: pattern.imagePlaceholder }} />
+                 {pattern.imageUrl && (
+                   <img 
+                     src={pattern.imageUrl} 
+                     alt={pattern.title} 
+                     className="absolute inset-0 w-full h-full object-cover" 
+                   />
+                 )}
                  {/* from-paper uses CSS var — flips automatically */}
                  <div className="absolute inset-0 bg-gradient-to-t from-paper/40 via-transparent to-transparent pointer-events-none" />
                  

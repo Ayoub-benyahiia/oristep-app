@@ -9,6 +9,7 @@ interface PatternContextType {
   error: Error | null;
   refreshPatterns: () => Promise<void>;
   getPatternById: (id: string) => OrigamiPattern | undefined;
+  getPatternBySlug: (slug: string) => OrigamiPattern | undefined;
 }
 
 const PatternContext = createContext<PatternContextType | undefined>(undefined);
@@ -38,9 +39,10 @@ export function PatternProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const getPatternById = (id: string) => patterns.find(p => p.id === id);
+  const getPatternBySlug = (slug: string) => patterns.find(p => p.slug === slug);
 
   return (
-    <PatternContext.Provider value={{ patterns, isLoading, error, refreshPatterns, getPatternById }}>
+    <PatternContext.Provider value={{ patterns, isLoading, error, refreshPatterns, getPatternById, getPatternBySlug }}>
       {children}
     </PatternContext.Provider>
   );

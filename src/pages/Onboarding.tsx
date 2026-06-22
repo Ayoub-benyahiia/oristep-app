@@ -183,7 +183,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
                 <div className="space-y-3 shrink-0 mt-6">
                   <button 
-                    onClick={() => handleFinish(`/fold/${recommended.id}`)} 
+                    onClick={() => handleFinish(`/fold/${recommended.slug}`)} 
                     className="w-full py-4 bg-accent text-paper rounded-full font-bold uppercase tracking-widest text-[11px] shadow-md hover:bg-accent-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                   >
                     Start Folding <ArrowRight className="w-4 h-4 ml-1" />

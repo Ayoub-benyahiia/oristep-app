@@ -13,6 +13,7 @@ export interface OrigamiStep {
 
 export interface OrigamiPattern {
   id: string;
+  slug: string;
   title: string;
   category: PatternCategory;
   difficulty: PatternDifficulty;
@@ -22,6 +23,8 @@ export interface OrigamiPattern {
   paperTypeRecommendation: string;
   description: string;
   tags: string[];
+  isPublished: boolean;
+  isFeatured: boolean;
   imagePlaceholder: string;
   imageUrl?: string;
   steps?: OrigamiStep[];
