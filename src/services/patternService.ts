@@ -108,7 +108,7 @@ export async function fetchPatternSteps(patternId: string): Promise<OrigamiStep[
 export async function fetchPrivacyPolicy(): Promise<string | null> {
   if (!db) return null;
   try {
-    const docRef = doc(db, 'settings', 'privacy_policy');
+    const docRef = doc(db, 'settings', 'privacy-policy');
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       return docSnap.data().content || null;
