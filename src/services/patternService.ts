@@ -11,6 +11,7 @@ export async function fetchPatterns(): Promise<OrigamiPattern[]> {
     const { data: patternsData, error } = await supabase
       .from('patterns')
       .select('*')
+      .eq('is_published', true)
       .order('sort_order', { ascending: true });
 
     if (error) throw error;

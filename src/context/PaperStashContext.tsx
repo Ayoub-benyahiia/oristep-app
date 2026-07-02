@@ -11,6 +11,9 @@ interface PaperStashContextState {
 
 const PaperStashContext = createContext<PaperStashContextState | undefined>(undefined);
 
+const createPaperId = () =>
+  globalThis.crypto?.randomUUID?.() ?? `paper-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
 export function PaperStashProvider({ children }: { children: ReactNode }) {
   const [papers, setPapers] = useState<Paper[]>(() => {
     try {
@@ -31,7 +34,7 @@ export function PaperStashProvider({ children }: { children: ReactNode }) {
     const now = Date.now();
     const newPaper: Paper = {
       ...paperData,
-      id: Math.random().toString(36).substring(2, 9),
+      id: createPaperId(),
       createdAt: now,
       updatedAt: now,
     };

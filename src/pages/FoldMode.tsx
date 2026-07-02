@@ -125,9 +125,9 @@ export function FoldMode() {
           <motion.div
             key={viewIndex}
             custom={direction}
-            initial={{ opacity: 0, y: 15, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -15, filter: 'blur(4px)' }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col h-full w-full pt-4"
           >
@@ -242,7 +242,7 @@ export function FoldMode() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute inset-0 z-[200] bg-ink/70 backdrop-blur-sm flex items-center justify-center px-6"
+            className="absolute inset-0 z-[200] bg-ink/75 flex items-center justify-center px-6"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
