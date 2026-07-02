@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { fetchPrivacyPolicy } from '../services/patternService';
 
-export function PrivacyPolicyContent() {
+function StaticPolicy() {
   return (
     <div className="space-y-6">
       <div className="bg-paper-light border border-crease-light rounded-[1.5rem] p-5 shadow-sm text-sm text-ink-light space-y-1">
@@ -156,4 +157,44 @@ export function PrivacyPolicyContent() {
       </div>
     </div>
   );
+}
+
+export function PrivacyPolicyContent() {
+  const [dynamicPolicy, setDynamicPolicy] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchPrivacyPolicy().then(policy => {
+      if (mounted) {
+        setDynamicPolicy(policy);
+        setLoading(false);
+      }
+    }).catch(() => {
+      if (mounted) setLoading(false);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="p-12 flex flex-col items-center justify-center space-y-4">
+        <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin"></div>
+        <p className="text-ink-light text-sm animate-pulse">Loading policy...</p>
+      </div>
+    );
+  }
+
+  if (dynamicPolicy) {
+    // Render the dynamic HTML fetched from Firestore. Assuming the content is HTML.
+    return (
+      <div 
+        className="space-y-6 prose prose-sm max-w-none text-ink pb-32" 
+        dangerouslySetInnerHTML={{ __html: dynamicPolicy }} 
+      />
+    );
+  }
+
+  // Fallback if dynamic fetch fails or doc doesn't exist
+  return <StaticPolicy />;
 }

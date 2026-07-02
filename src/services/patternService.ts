@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc, query, where, orderBy } from "firebase/firestore";
 import { db } from '../lib/firebase';
 import { OrigamiPattern, OrigamiStep } from '../types';
 import { PATTERNS as LOCAL_PATTERNS } from '../data';
@@ -102,5 +102,20 @@ export async function fetchPatternSteps(patternId: string): Promise<OrigamiStep[
     
     const localPattern = LOCAL_PATTERNS.find(p => p.id === patternId);
     return localPattern?.steps || [];
+  }
+}
+
+export async function fetchPrivacyPolicy(): Promise<string | null> {
+  if (!db) return null;
+  try {
+    const docRef = doc(db, 'settings', 'privacy_policy');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data().content || null;
+    }
+    return null;
+  } catch (err) {
+    console.error('Error fetching privacy policy from Firebase:', err);
+    return null;
   }
 }
