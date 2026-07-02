@@ -3,13 +3,14 @@ import { Home, Compass, Bookmark, Settings } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion } from 'motion/react';
 
+const navItems = [
+  { to: '/', icon: Home, label: 'Home' },
+  { to: '/browse', icon: Compass, label: 'Browse' },
+  { to: '/projects', icon: Bookmark, label: 'Projects' },
+  { to: '/settings', icon: Settings, label: 'Settings' },
+];
+
 export function BottomNav() {
-  const navItems = [
-    { to: '/', icon: Home, label: 'Home' },
-    { to: '/browse', icon: Compass, label: 'Browse' },
-    { to: '/projects', icon: Bookmark, label: 'Projects' },
-    { to: '/settings', icon: Settings, label: 'Settings' },
-  ];
 
   return (
     <div className="absolute bottom-0 w-full z-50 px-4 pb-safe pt-2 bg-gradient-to-t from-paper-light via-paper-light to-paper-light/80 backdrop-blur-lg border-t border-crease-light">
@@ -18,6 +19,7 @@ export function BottomNav() {
           <NavLink
             key={item.to}
             to={item.to}
+            end={item.to === '/'}
             className={({ isActive }) =>
               cn(
                 "relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-300",

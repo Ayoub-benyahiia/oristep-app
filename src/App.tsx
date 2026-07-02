@@ -33,8 +33,11 @@ function AppLoadingFallback() {
   );
 }
 
-class ErrorBoundary extends React.Component<any, any> {
-  state = { hasError: false, error: null };
+interface EBProps { children: React.ReactNode }
+interface EBState { hasError: boolean; error: Error | null }
+
+class ErrorBoundary extends React.Component<EBProps, EBState> {
+  state: EBState = { hasError: false, error: null };
   static getDerivedStateFromError(error: Error) { return { hasError: true, error }; }
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) { console.error(error, errorInfo); }
   render() {
@@ -51,17 +54,23 @@ class ErrorBoundary extends React.Component<any, any> {
               </>
             )}
           </pre>
+          <button
+            className="mt-6 px-6 py-2 bg-accent text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload(); }}
+          >
+            Try Again
+          </button>
         </div>
       );
     }
-    return (this as any).props.children;
+    return this.props.children;
   }
 }
 
 function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
-  const isFoldMode = location.pathname.includes('/fold');
+  const isFoldMode = location.pathname.startsWith('/fold/');
   
   const [onboardingState, setOnboardingState] = useState(() => {
     try {

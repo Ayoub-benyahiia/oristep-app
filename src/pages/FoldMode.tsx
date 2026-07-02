@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { X, ChevronLeft, ChevronRight, Check, HelpCircle } from 'lucide-react';
 import { usePatterns } from '../context/PatternContext';
@@ -7,6 +7,7 @@ import { fetchPatternSteps } from '../services/patternService';
 import { cn } from '../lib/utils';
 import { OrigamiStep } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
+import { hapticImpact, hapticSuccess } from '../lib/haptics';
 
 export function FoldMode() {
   const { slug } = useParams<{ slug: string }>();
@@ -23,24 +24,53 @@ export function FoldMode() {
   const [showCompletion, setShowCompletion] = useState(false);
   const [steps, setSteps] = useState<OrigamiStep[]>(pattern?.steps || []);
   const [isLoadingSteps, setIsLoadingSteps] = useState(pattern && !pattern.steps ? true : false);
+  const [timeElapsed, setTimeElapsed] = useState(0);
+
+  const isInitialized = useRef(false);
+  useEffect(() => {
+    if (!isInitialized.current && progress && !progress.completed) {
+      setViewIndex(Math.max(0, Math.min(progress.currentStepIndex, (pattern?.totalSteps || 1) - 1)));
+      isInitialized.current = true;
+    }
+  }, [progress, pattern?.totalSteps]);
 
   useEffect(() => {
-    if (progress && !progress.completed) {
-       setViewIndex(Math.max(0, Math.min(progress.currentStepIndex, (pattern?.totalSteps || 1) - 1)));
+    if (showCompletion || isLoadingSteps) return;
+    const interval = setInterval(() => setTimeElapsed(prev => prev + 1), 1000);
+    return () => clearInterval(interval);
+  }, [showCompletion, isLoadingSteps]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  const triggerHaptic = (type: 'light' | 'success' = 'light') => {
+    if (data.settings?.hapticsEnabled ?? true) {
+      if (type === 'success') hapticSuccess();
+      else hapticImpact();
     }
-  }, []);
+  };
 
   useEffect(() => {
     if (pattern && (!pattern.steps || pattern.steps.length === 0)) {
+      let cancelled = false;
       setIsLoadingSteps(true);
       fetchPatternSteps(pattern.id).then(fetchedSteps => {
-        setSteps(fetchedSteps);
-        setIsLoadingSteps(false);
+        if (!cancelled) {
+          setSteps(fetchedSteps);
+          setIsLoadingSteps(false);
+        }
+      }).catch(err => {
+        console.error('Failed to fetch steps:', err);
+        if (!cancelled) setIsLoadingSteps(false);
       });
+      return () => { cancelled = true; };
     } else if (pattern?.steps) {
       setSteps(pattern.steps);
     }
-  }, [pattern]);
+  }, [pattern?.id]);
 
   if (!pattern) return (
     <div className="absolute inset-0 bg-paper-light z-[100] flex flex-col items-center justify-center p-6 text-center text-ink">
@@ -77,19 +107,25 @@ export function FoldMode() {
 
   const handlePrimary = () => {
     if (isLastStep) {
-      updateProgress(pattern.id, viewIndex, total, true);
+      updateProgress(pattern.id, viewIndex, total, true, timeElapsed);
+      triggerHaptic('success');
       setShowCompletion(true);
     } else if (isCompleted || viewIndex < maxReached) {
       setDirection(1); setShowHint(false); setViewIndex(viewIndex + 1);
+      triggerHaptic('light');
     } else {
       const nextIdx = viewIndex + 1;
       updateProgress(pattern.id, nextIdx, total, false);
       setDirection(1); setShowHint(false); setViewIndex(nextIdx);
+      triggerHaptic('light');
     }
   };
 
   const handlePrev = () => {
-    if (viewIndex > 0) { setDirection(-1); setShowHint(false); setViewIndex(viewIndex - 1); }
+    if (viewIndex > 0) { 
+      setDirection(-1); setShowHint(false); setViewIndex(viewIndex - 1);
+      triggerHaptic('light');
+    }
   };
 
   return (
@@ -105,7 +141,7 @@ export function FoldMode() {
       {/* Header */}
       <div className="w-full flex justify-between items-center px-6 py-4 pt-12 relative z-20 shrink-0">
         <button 
-          onClick={() => navigate(-1)}
+          onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/')}
           className="w-12 h-12 flex items-center justify-center text-ink bg-paper rounded-full shadow-sm border border-crease-light active:scale-95 transition-all"
         >
           <X className="w-5 h-5" />
@@ -116,7 +152,9 @@ export function FoldMode() {
             Step {viewIndex + 1} <span className="text-ink-light font-sans text-sm">of {total}</span>
           </div>
         </div>
-        <div className="w-12 h-12" /> 
+        <div className="w-12 h-12 flex flex-col items-center justify-center bg-paper rounded-full shadow-sm border border-crease-light">
+           <span className="text-[10px] font-bold tracking-widest text-ink">{formatTime(timeElapsed)}</span>
+        </div> 
       </div>
 
       {/* Content area */}
@@ -219,6 +257,7 @@ export function FoldMode() {
         <button
           onClick={handlePrev}
           disabled={viewIndex === 0}
+          aria-label="Previous step"
           className="w-14 h-14 rounded-full flex items-center justify-center text-ink bg-paper shadow-sm border border-crease-light disabled:opacity-30 transition-all active:scale-95 shrink-0"
         >
           <ChevronLeft className="w-6 h-6" />
@@ -226,6 +265,7 @@ export function FoldMode() {
         
         <button
           onClick={handlePrimary}
+          aria-label={primaryText}
           className={cn(
             "flex-1 h-14 rounded-full flex items-center justify-center font-bold text-xs uppercase tracking-widest shadow-md active:scale-[0.98] transition-all",
             isLastStep ? "bg-ink text-paper-light hover:bg-ink-dark" : "bg-accent text-paper hover:bg-accent-dark"
@@ -256,9 +296,13 @@ export function FoldMode() {
                 </svg>
               </div>
               <h2 className="text-3xl font-heading mb-3">Masterful Fold!</h2>
-              <p className="text-ink-light font-medium text-[15px] leading-relaxed mb-8 px-2">
+              <p className="text-ink-light font-medium text-[15px] leading-relaxed mb-4 px-2">
                 You have successfully completed the {pattern.title}.
               </p>
+              <div className="bg-paper-light border border-crease-light rounded-2xl p-4 mb-8 mx-4 shadow-sm inline-block min-w-[150px]">
+                <p className="text-[10px] uppercase font-bold tracking-widest text-ink-light mb-1">Time Taken</p>
+                <p className="text-2xl font-heading text-accent">{formatTime(timeElapsed)}</p>
+              </div>
               <button
                 onClick={() => navigate('/')}
                 className="w-full py-4 rounded-full bg-ink text-paper-light font-bold tracking-widest uppercase text-xs shadow-md hover:bg-ink-dark active:scale-[0.98] transition-all"

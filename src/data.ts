@@ -3,6 +3,9 @@ import { OrigamiPattern } from './types';
 export const PATTERNS: OrigamiPattern[] = [
   {
     id: 'paper-crane',
+  slug: 'paper-crane',
+  isPublished: true,
+  isFeatured: false,
     title: 'Paper Crane',
     category: 'Animals',
     difficulty: 'Intermediate',
@@ -28,6 +31,9 @@ export const PATTERNS: OrigamiPattern[] = [
   },
   {
     id: 'jumping-frog',
+  slug: 'jumping-frog',
+  isPublished: true,
+  isFeatured: false,
     title: 'Jumping Frog',
     category: 'Animals',
     difficulty: 'Intermediate',
@@ -50,6 +56,9 @@ export const PATTERNS: OrigamiPattern[] = [
   },
   {
     id: 'lotus-flower',
+  slug: 'lotus-flower',
+  isPublished: true,
+  isFeatured: false,
     title: 'Lotus Flower',
     category: 'Nature',
     difficulty: 'Advanced',
@@ -73,6 +82,9 @@ export const PATTERNS: OrigamiPattern[] = [
   },
   {
     id: 'paper-boat',
+  slug: 'paper-boat',
+  isPublished: true,
+  isFeatured: false,
     title: 'Paper Boat',
     category: 'Objects',
     difficulty: 'Beginner',
@@ -96,6 +108,9 @@ export const PATTERNS: OrigamiPattern[] = [
   },
   {
     id: 'butterfly',
+  slug: 'butterfly',
+  isPublished: true,
+  isFeatured: false,
     title: 'Butterfly',
     category: 'Nature',
     difficulty: 'Intermediate',
@@ -117,6 +132,9 @@ export const PATTERNS: OrigamiPattern[] = [
   },
   {
     id: 'lucky-star',
+  slug: 'lucky-star',
+  isPublished: true,
+  isFeatured: false,
     title: 'Lucky Star',
     category: 'Objects',
     difficulty: 'Beginner',
@@ -137,6 +155,9 @@ export const PATTERNS: OrigamiPattern[] = [
   },
   {
     id: 'fox-face',
+  slug: 'fox-face',
+  isPublished: true,
+  isFeatured: false,
     title: 'Fox Face',
     category: 'Animals',
     difficulty: 'Beginner',
@@ -157,6 +178,9 @@ export const PATTERNS: OrigamiPattern[] = [
   },
   {
     id: 'modular-cube',
+  slug: 'modular-cube',
+  isPublished: true,
+  isFeatured: false,
     title: 'Modular Cube',
     category: 'Modular',
     difficulty: 'Intermediate',

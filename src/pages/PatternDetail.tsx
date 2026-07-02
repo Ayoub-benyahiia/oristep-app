@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Heart, Clock, BarChart, FileText, Minimize2 
 import { usePatterns } from '../context/PatternContext';
 import { useProgress } from '../context/ProgressContext';
 import { cn, isSizeMatching, isTypeMatching } from '../lib/utils';
-import React, { Fragment } from 'react';
+import type React from 'react';
 import { usePaperStash } from '../context/PaperStashContext';
 
 export function PatternDetail() {
@@ -66,12 +66,14 @@ export function PatternDetail() {
           {/* Glass buttons use bg-paper/70 — the CSS var flips to #18181b/70 in dark mode */}
           <button 
             onClick={() => navigate(-1)}
+            aria-label="Go back"
             className="w-10 h-10 rounded-full bg-paper/70 backdrop-blur-md flex items-center justify-center text-ink shadow-sm border border-crease-light/40 active:scale-95 transition-transform"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button 
             onClick={() => toggleFavorite(pattern.id)}
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             className="w-10 h-10 rounded-full bg-paper/70 backdrop-blur-md flex items-center justify-center text-ink shadow-sm border border-crease-light/40 active:scale-95 transition-transform"
           >
             <Heart className={cn("w-5 h-5 transition-colors", isFavorite && "fill-red-500 text-red-500")} />

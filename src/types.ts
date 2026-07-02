@@ -23,8 +23,8 @@ export interface OrigamiPattern {
   paperTypeRecommendation: string;
   description: string;
   tags: string[];
-  isPublished: boolean;
-  isFeatured: boolean;
+  isPublished?: boolean;
+  isFeatured?: boolean;
   imagePlaceholder: string;
   imageUrl?: string;
   steps?: OrigamiStep[];
@@ -47,6 +47,7 @@ export interface UserProgress {
   lastAccessed: number;
   completed: boolean;
   completedDate?: number;
+  bestTime?: number; // Time in seconds
 }
 
 export interface UserData {
@@ -55,5 +56,8 @@ export interface UserData {
   stash: {
     squareCount: number;
     colors: string[];
+  };
+  settings?: {
+    hapticsEnabled: boolean;
   };
 }

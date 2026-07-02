@@ -64,7 +64,7 @@ export function PaperStash() {
         <div className="flex items-center justify-between">
           <button 
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-ink shadow-sm border border-crease-light active:scale-95 transition-all"
+            className="w-10 h-10 rounded-full bg-paper flex items-center justify-center text-ink shadow-sm border border-crease-light active:scale-95 transition-all"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -82,7 +82,7 @@ export function PaperStash() {
       </header>
 
       {papers.length === 0 ? (
-        <div className="bg-white rounded-[2rem] border border-crease-light border-dashed p-10 flex flex-col items-center justify-center text-center shadow-sm py-16">
+        <div className="bg-paper rounded-[2rem] border border-crease-light border-dashed p-10 flex flex-col items-center justify-center text-center shadow-sm py-16">
            <div className="w-16 h-16 bg-paper-light border border-crease-light rounded-full flex items-center justify-center mb-6 text-ink-light">
              <FileText className="w-6 h-6" />
            </div>
@@ -106,7 +106,7 @@ export function PaperStash() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-[2rem] p-5 shadow-sm border border-crease-light relative overflow-hidden group"
+                className="bg-paper rounded-[2rem] p-5 shadow-sm border border-crease-light relative overflow-hidden group"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1 pr-10">
@@ -134,7 +134,7 @@ export function PaperStash() {
                 <div className="flex items-center gap-2 mt-5 pt-4 border-t border-crease/50">
                   <button 
                     onClick={() => handleOpenEdit(paper)}
-                    className="flex-1 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest text-ink bg-paper-light border border-crease-light hover:bg-white transition-all flex justify-center items-center gap-1.5"
+                    className="flex-1 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest text-ink bg-paper-light border border-crease-light hover:bg-paper transition-all flex justify-center items-center gap-1.5"
                   >
                     <Edit2 className="w-3.5 h-3.5" /> Edit
                   </button>
@@ -164,7 +164,7 @@ export function PaperStash() {
                <h2 className="font-heading text-xl text-ink">{editingPaper ? 'Edit Paper' : 'Add Paper'}</h2>
                <button 
                  onClick={handleCloseForm}
-                 className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-ink shadow-sm border border-crease-light active:scale-95 transition-all"
+                 className="w-10 h-10 rounded-full bg-paper flex items-center justify-center text-ink shadow-sm border border-crease-light active:scale-95 transition-all"
                >
                  <X className="w-5 h-5" />
                </button>
@@ -180,7 +180,7 @@ export function PaperStash() {
                     placeholder="e.g. Cherry Red, Mint Green"
                     value={form.color}
                     onChange={(e) => setForm({...form, color: e.target.value})}
-                    className="w-full bg-white border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm"
+                    className="w-full bg-paper border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm"
                   />
                 </div>
 
@@ -193,7 +193,7 @@ export function PaperStash() {
                       placeholder="e.g. 15x15"
                       value={form.size}
                       onChange={(e) => setForm({...form, size: e.target.value})}
-                      className="w-full bg-white border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm"
+                      className="w-full bg-paper border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm"
                     />
                   </div>
                   <div className="space-y-2">
@@ -205,7 +205,7 @@ export function PaperStash() {
                       placeholder="0"
                       value={form.quantity}
                       onChange={(e) => setForm({...form, quantity: Math.max(0, parseInt(e.target.value) || 0)})}
-                      className="w-full bg-white border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm"
+                      className="w-full bg-paper border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm"
                     />
                   </div>
                 </div>
@@ -218,7 +218,7 @@ export function PaperStash() {
                     placeholder="e.g. Kami, Foil, Kraft, Washi"
                     value={form.type}
                     onChange={(e) => setForm({...form, type: e.target.value})}
-                    className="w-full bg-white border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm"
+                    className="w-full bg-paper border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm"
                   />
                 </div>
 
@@ -229,7 +229,7 @@ export function PaperStash() {
                     value={form.notes}
                     onChange={(e) => setForm({...form, notes: e.target.value})}
                     rows={3}
-                    className="w-full bg-white border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm resize-none"
+                    className="w-full bg-paper border border-crease rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all shadow-sm resize-none"
                   />
                 </div>
 

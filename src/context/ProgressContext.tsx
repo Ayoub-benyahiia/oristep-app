@@ -5,18 +5,20 @@ import { safeGetJSON, safeSetJSON } from '../lib/utils';
 interface ProgressContextState {
   data: UserData;
   toggleFavorite: (patternId: string) => void;
-  updateProgress: (patternId: string, currentStepIndex: number, totalSteps: number, markCompleted?: boolean) => void;
+  updateProgress: (patternId: string, currentStepIndex: number, totalSteps: number, markCompleted?: boolean, timeTaken?: number) => void;
   resetProgress: (patternId: string) => void;
   resetAllProgress: () => void;
   resetFavorites: () => void;
   resetStash: () => void;
   resetAllData: () => void;
+  toggleHaptics: () => void;
 }
 
 const defaultData: UserData = {
   favorites: [],
   progress: {},
   stash: { squareCount: 10, colors: ['#ffffff'] },
+  settings: { hapticsEnabled: true },
 };
 
 const ProgressContext = createContext<ProgressContextState | undefined>(undefined);
@@ -29,7 +31,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     return {
       favorites: Array.isArray(parsed.favorites) ? parsed.favorites : defaultData.favorites,
       progress: typeof parsed.progress === 'object' && parsed.progress !== null ? parsed.progress : defaultData.progress,
-      stash: parsed.stash || defaultData.stash
+      stash: parsed.stash || defaultData.stash,
+      settings: parsed.settings || defaultData.settings,
     };
   });
 
@@ -61,7 +64,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   };
 
-  const updateProgress = (patternId: string, currentStepIndex: number, totalSteps: number, markCompleted: boolean = false) => {
+  const updateProgress = (patternId: string, currentStepIndex: number, totalSteps: number, markCompleted: boolean = false, timeTaken?: number) => {
     recordActivityDate();
     setData((prev) => {
       const existing = prev.progress[patternId];
@@ -77,6 +80,16 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       if (completedDate !== undefined) {
         newProgress.completedDate = completedDate;
       }
+      if (completed && timeTaken) {
+        if (!existing?.bestTime || timeTaken < existing.bestTime) {
+          newProgress.bestTime = timeTaken;
+        } else {
+          newProgress.bestTime = existing.bestTime;
+        }
+      } else if (existing?.bestTime) {
+        newProgress.bestTime = existing.bestTime;
+      }
+      
       return {
         ...prev,
         progress: {
@@ -116,10 +129,20 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     window.location.reload();
   };
 
+  const toggleHaptics = () => {
+    setData((prev) => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        hapticsEnabled: !(prev.settings?.hapticsEnabled ?? true)
+      }
+    }));
+  };
+
   return (
     <ProgressContext.Provider value={{ 
       data, toggleFavorite, updateProgress, resetProgress,
-      resetAllProgress, resetFavorites, resetStash, resetAllData
+      resetAllProgress, resetFavorites, resetStash, resetAllData, toggleHaptics
     }}>
       {children}
     </ProgressContext.Provider>

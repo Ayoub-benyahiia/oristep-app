@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Moon, Sun, Shield, Info, Mail, RotateCcw,
-  Trash2, FileText, CheckCircle2, ChevronRight, X
+  Trash2, FileText, CheckCircle2, ChevronRight, X, Vibrate
 } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 import { useAchievements } from '../context/AchievementContext';
@@ -10,9 +10,19 @@ import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
+import { PrivacyPolicyContent } from '../components/PrivacyPolicyContent';
+
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="space-y-4 pt-2">
+    <h2 className="text-sm font-bold tracking-widest uppercase text-ink-light px-2">{title}</h2>
+    <div className="bg-paper rounded-[2rem] shadow-sm border border-crease overflow-hidden divide-y divide-crease-light">
+      {children}
+    </div>
+  </div>
+);
 
 export function Settings() {
-  const { data, resetAllProgress, resetFavorites, resetAllData } = useProgress();
+  const { data, resetAllProgress, resetFavorites, resetAllData, toggleHaptics } = useProgress();
   const { resetAchievements } = useAchievements();
   const { resetPaperStash } = usePaperStash();
   const { theme, setTheme } = useTheme();
@@ -20,6 +30,7 @@ export function Settings() {
   const [onboardingData, setOnboardingData] = useState<{level: string, interests: string[]} | null>(null);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [showContact, setShowContact] = useState(false);
 
   useEffect(() => {
     try {
@@ -44,15 +55,7 @@ export function Settings() {
     if (window.confirm(`Are you sure you want to ${action}? This action cannot be undone.`)) fn();
   };
 
-  // Section wrapper — purely token-driven
-  const Section = ({ title, children }: { title: string, children: React.ReactNode }) => (
-    <div className="space-y-4 pt-2">
-      <h2 className="text-sm font-bold tracking-widest uppercase text-ink-light px-2">{title}</h2>
-      <div className="bg-paper rounded-[2rem] shadow-sm border border-crease overflow-hidden divide-y divide-crease-light">
-        {children}
-      </div>
-    </div>
-  );
+
 
   return (
     <div className="pb-32 px-5 pt-12 space-y-10 max-w-md mx-auto min-h-screen text-ink">
@@ -60,7 +63,7 @@ export function Settings() {
         <h1 className="text-3xl font-heading text-ink">Settings</h1>
       </header>
 
-      <Section title="Appearance">
+      <Section title="Appearance & Experience">
         <div className="p-5 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="w-10 h-10 rounded-full bg-paper-light flex items-center justify-center text-ink border border-crease-light">
@@ -84,6 +87,29 @@ export function Settings() {
              >
                Dark
              </button>
+          </div>
+        </div>
+        
+        {/* Haptics Toggle */}
+        <div className="p-5 flex items-center justify-between hover:bg-paper-light transition-colors cursor-pointer" onClick={toggleHaptics}>
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 rounded-full bg-paper-light flex items-center justify-center text-ink border border-crease-light">
+              <Vibrate className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="font-bold text-sm text-ink">Haptic Feedback</p>
+              <p className="text-[10px] uppercase tracking-widest text-ink-light font-bold mt-1">Vibrations on action</p>
+            </div>
+          </div>
+          <div className="flex bg-paper-light rounded-full p-1 border border-crease-light">
+            <div className={cn("w-12 h-6 rounded-full relative transition-colors duration-300", data.settings?.hapticsEnabled ?? true ? "bg-accent" : "bg-crease")}>
+              <motion.div 
+                layout
+                className="w-5 h-5 bg-paper rounded-full absolute top-[2px] shadow-sm"
+                animate={{ left: data.settings?.hapticsEnabled ?? true ? "26px" : "2px" }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            </div>
           </div>
         </div>
       </Section>
@@ -165,7 +191,7 @@ export function Settings() {
           </div>
           <Trash2 className="w-4 h-4 text-ink-light/70" />
         </button>
-        <button onClick={() => confirmReset('delete ALL your data', () => { resetAllData(); })} className="w-full p-5 flex items-center justify-between hover:bg-red-50 transition-colors text-left">
+        <button onClick={() => confirmReset('delete ALL your data', () => { resetAllData(); })} className="w-full p-5 flex items-center justify-between hover:bg-red-500/10 transition-colors text-left">
           <div>
             <p className="font-bold text-sm text-red-600">Reset All Local Data</p>
             <p className="text-[10px] uppercase tracking-widest text-red-500/70 font-bold mt-1">Completely clear everything Oristep</p>
@@ -204,7 +230,7 @@ export function Settings() {
           </div>
           <ChevronRight className="w-5 h-5 text-ink-light/50" />
         </button>
-        <a href="mailto:hello@oristep.app" className="w-full p-5 flex items-center justify-between hover:bg-paper-light transition-colors text-left group block">
+        <button onClick={() => setShowContact(true)} className="w-full p-5 flex items-center justify-between hover:bg-paper-light transition-colors text-left group">
           <div className="flex items-center space-x-4">
             <div className="w-10 h-10 rounded-full bg-paper-light flex items-center justify-center text-ink border border-transparent group-hover:border-crease-light transition-colors">
               <Mail className="w-5 h-5" />
@@ -212,7 +238,7 @@ export function Settings() {
             <p className="font-bold text-sm text-ink">Contact / Feedback</p>
           </div>
           <ChevronRight className="w-5 h-5 text-ink-light/50" />
-        </a>
+        </button>
       </Section>
       
       <p className="text-center text-xs text-ink-light/50 font-medium pb-8 mt-12">Crafted with precision</p>
@@ -242,6 +268,39 @@ export function Settings() {
         )}
       </AnimatePresence>
 
+      {/* Contact Modal */}
+      <AnimatePresence>
+        {showContact && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-ink/70 backdrop-blur-sm flex items-center justify-center px-6"
+          >
+            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
+              className="w-full max-w-sm bg-paper rounded-[2.5rem] p-8 text-center shadow-2xl border border-crease text-ink relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-32 bg-accent/10 -z-10" />
+              <div className="w-20 h-20 mx-auto mb-6 rounded-[1.5rem] bg-paper text-accent flex items-center justify-center shadow-md border border-crease">
+                 <Mail className="w-10 h-10" />
+              </div>
+              <h2 className="text-2xl font-heading mb-3">Get in Touch</h2>
+              <p className="text-ink-light font-medium text-[14px] leading-relaxed mb-6 px-2">
+                Have questions, feedback, or need help? We'd love to hear from you.
+              </p>
+              
+              <div className="bg-paper-light border border-crease-light rounded-2xl p-4 mb-8">
+                <p className="text-[10px] uppercase font-bold tracking-widest text-ink-light mb-2">Email Address</p>
+                <a href="mailto:ouhsineabdelali@gmail.com" className="text-[15px] font-bold text-accent break-all hover:underline">
+                  ouhsineabdelali@gmail.com
+                </a>
+              </div>
+
+              <button onClick={() => setShowContact(false)}
+                className="w-full py-4 rounded-full bg-ink text-paper-light font-bold tracking-widest uppercase text-xs shadow-md hover:bg-ink-dark active:scale-[0.98] transition-all"
+              >Close</button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Privacy Modal */}
       <AnimatePresence>
         {showPrivacy && (
@@ -250,9 +309,9 @@ export function Settings() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[200] bg-paper-light flex flex-col md:rounded-[2.5rem] md:overflow-hidden overflow-y-auto"
+            className="fixed inset-0 z-[200] bg-paper-light flex flex-col md:rounded-[2.5rem] md:overflow-hidden"
           >
-            <div className="sticky top-0 w-full px-6 py-5 flex items-center justify-between bg-paper-light/90 backdrop-blur-md z-10 border-b border-crease-light">
+            <div className="shrink-0 w-full px-6 py-5 flex items-center justify-between bg-paper-light/90 backdrop-blur-md z-10 border-b border-crease-light">
                <h2 className="font-heading text-xl text-ink">Privacy Policy</h2>
                <button 
                  onClick={() => setShowPrivacy(false)}
@@ -261,30 +320,20 @@ export function Settings() {
                  <X className="w-5 h-5" />
                </button>
             </div>
-            <div className="px-6 py-8 flex-1 max-w-md mx-auto w-full space-y-6 text-[15px] leading-relaxed font-medium text-ink-light">
-              <div className="w-16 h-16 rounded-[1.5rem] bg-paper border border-crease shadow-sm flex items-center justify-center text-ink mb-8">
-                 <Shield className="w-8 h-8" />
-              </div>
-              
-              <div className="space-y-6">
-                <p><strong className="text-ink block mb-1">Introduction</strong>Oristep loads published origami pattern content from Supabase. Mobile users do not need an account. The app uses the Android Internet permission to fetch published pattern content and folding steps from Supabase.</p>
-                
-                <div className="bg-paper rounded-2xl p-5 border border-crease shadow-sm space-y-2">
-                  <h3 className="font-heading text-lg text-ink font-semibold">Data Storage (Local Storage)</h3>
-                  <p>Progress, favorites, completed projects, onboarding preferences, paper stash, achievements, streaks, and settings stay locally on your device using localStorage.</p>
-                  <p>This local app data is not synced to Supabase by the mobile app. You can clear it at any time using the reset options in Settings.</p>
+            <div className="flex-1 overflow-y-auto px-6 py-8">
+              <div className="max-w-md mx-auto w-full space-y-6 text-[15px] leading-relaxed font-medium text-ink-light">
+                <div className="w-16 h-16 rounded-[1.5rem] bg-paper border border-crease shadow-sm flex items-center justify-center text-ink mb-8">
+                   <Shield className="w-8 h-8" />
                 </div>
                 
-                <p><strong className="text-ink block mb-1">Third-Party Services & Ads</strong>Oristep does not include ads, analytics, tracking, payments, or mobile account login, and does not sell personal data.</p>
-                
-                <p><strong className="text-ink block mb-1">Changes to This Policy</strong>We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. <span className="opacity-80 block mt-1">(Last updated: June 2026)</span></p>
-                
-                <p><strong className="text-ink block mb-1">Contact Us</strong>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at: <a href="mailto:ouhsineabdelali@gmail.com" className="text-accent font-bold hover:underline">ouhsineabdelali@gmail.com</a>.</p>
+                <PrivacyPolicyContent />
               </div>
+            </div>
 
-              <div className="pt-8 pb-32">
+            <div className="shrink-0 p-6 bg-paper-light border-t border-crease-light">
+              <div className="max-w-md mx-auto w-full">
                 <button onClick={() => setShowPrivacy(false)}
-                  className="w-full py-4 bg-ink text-paper-light rounded-full font-bold tracking-widest uppercase text-xs shadow-md hover:bg-ink-dark transition-all"
+                  className="w-full py-4 bg-ink text-paper-light rounded-[1.5rem] font-bold tracking-widest uppercase text-xs shadow-xl border border-crease hover:bg-ink-dark transition-all"
                 >Understood</button>
               </div>
             </div>

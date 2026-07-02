@@ -1,80 +1,105 @@
-import { supabase } from '../lib/supabase';
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { db } from '../lib/firebase';
 import { OrigamiPattern, OrigamiStep } from '../types';
 import { PATTERNS as LOCAL_PATTERNS } from '../data';
 
 export async function fetchPatterns(): Promise<OrigamiPattern[]> {
-  if (!supabase) {
+  const CACHE_KEY = 'oristep_cache_patterns';
+  if (!db) {
     return LOCAL_PATTERNS;
   }
 
   try {
-    const { data: patternsData, error } = await supabase
-      .from('patterns')
-      .select('*')
-      .eq('is_published', true)
-      .order('sort_order', { ascending: true });
+    const patternsRef = collection(db, 'patterns');
+    const q = query(patternsRef, where('isPublished', '==', true), orderBy('sortOrder', 'asc'));
+    const querySnapshot = await getDocs(q);
 
-    if (error) throw error;
-
-    if (!patternsData || patternsData.length === 0) {
-      return LOCAL_PATTERNS; // Fallback if DB is empty but supposed to have data
+    if (querySnapshot.empty) {
+      // Fallback if DB is empty but supposed to have data, try cache first
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) return JSON.parse(cached);
+      return LOCAL_PATTERNS; 
     }
 
-    return patternsData.map(p => ({
-      id: p.id,
-      slug: p.slug || p.id,
-      title: p.title,
-      category: p.category as OrigamiPattern['category'],
-      difficulty: p.difficulty as OrigamiPattern['difficulty'],
-      estimatedTimeMinutes: p.estimated_minutes,
-      totalSteps: p.total_steps || 1, // Fallback if total_steps is not pre-computed
-      paperSize: p.paper_size,
-      paperTypeRecommendation: p.paper_type_recommendation,
-      description: p.description,
-      tags: p.tags || [],
-      isPublished: p.is_published ?? true,
-      isFeatured: p.is_featured ?? false,
-      imagePlaceholder: p.image_placeholder,
-      imageUrl: p.image_url,
-    }));
+    const mappedPatterns = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        slug: data.slug || doc.id,
+        title: data.title,
+        category: data.category as OrigamiPattern['category'],
+        difficulty: data.difficulty as OrigamiPattern['difficulty'],
+        estimatedTimeMinutes: data.estimatedTimeMinutes,
+        totalSteps: data.totalSteps || 1, 
+        paperSize: data.paperSize,
+        paperTypeRecommendation: data.paperTypeRecommendation,
+        description: data.description,
+        tags: data.tags || [],
+        isPublished: data.isPublished ?? true,
+        isFeatured: data.isFeatured ?? false,
+        imagePlaceholder: data.imagePlaceholder,
+        imageUrl: data.imageUrl,
+      };
+    });
+
+    // Cache the fresh data
+    localStorage.setItem(CACHE_KEY, JSON.stringify(mappedPatterns));
+    return mappedPatterns;
+
   } catch (err) {
-    console.error('Error fetching patterns from Supabase:', err);
-    return LOCAL_PATTERNS; // Fallback on error
+    console.error('Error fetching patterns from Firebase, attempting cache fallback:', err);
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+    return LOCAL_PATTERNS; 
   }
 }
 
 export async function fetchPatternSteps(patternId: string): Promise<OrigamiStep[]> {
-  if (!supabase) {
-    // Local fallback: extract steps from LOCAL_PATTERNS
+  const CACHE_KEY = `oristep_cache_steps_${patternId}`;
+  
+  if (!db) {
     const localPattern = LOCAL_PATTERNS.find(p => p.id === patternId);
     return localPattern?.steps || [];
   }
 
   try {
-    const { data: stepsData, error } = await supabase
-      .from('pattern_steps')
-      .select('*')
-      .eq('pattern_id', patternId)
-      .order('step_number', { ascending: true });
+    const stepsRef = collection(db, 'pattern_steps');
+    const q = query(stepsRef, where('patternId', '==', patternId), orderBy('stepNumber', 'asc'));
+    const querySnapshot = await getDocs(q);
 
-    if (error) throw error;
-
-    if (!stepsData || stepsData.length === 0) {
+    if (querySnapshot.empty) {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) return JSON.parse(cached);
+      
       const localPattern = LOCAL_PATTERNS.find(p => p.id === patternId);
       return localPattern?.steps || [];
     }
 
-    return stepsData.map(s => ({
-      stepNumber: s.step_number,
-      title: s.title,
-      instruction: s.instruction,
-      hint: s.hint || undefined,
-      tip: s.tip || undefined,
-      warning: s.warning || undefined,
-      diagramPlaceholder: s.diagram_placeholder || undefined,
-    } as OrigamiStep));
+    const mappedSteps = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        stepNumber: data.stepNumber,
+        title: data.title,
+        instruction: data.instruction,
+        hint: data.hint || undefined,
+        tip: data.tip || undefined,
+        warning: data.warning || undefined,
+        diagramPlaceholder: data.diagramPlaceholder || undefined,
+      } as OrigamiStep;
+    });
+
+    localStorage.setItem(CACHE_KEY, JSON.stringify(mappedSteps));
+    return mappedSteps;
+
   } catch (err) {
-    console.error(`Error fetching steps for pattern ${patternId} from Supabase:`, err);
+    console.error(`Error fetching steps for pattern ${patternId} from Firebase, attempting cache fallback:`, err);
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+    
     const localPattern = LOCAL_PATTERNS.find(p => p.id === patternId);
     return localPattern?.steps || [];
   }

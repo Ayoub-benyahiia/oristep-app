@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { Paper } from '../types';
 
 interface PaperStashContextState {
@@ -30,7 +30,7 @@ export function PaperStashProvider({ children }: { children: ReactNode }) {
     try { localStorage.setItem('oristep:paperStash', JSON.stringify(papers)); } catch {}
   }, [papers]);
 
-  const addPaper = (paperData: Omit<Paper, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addPaper = useCallback((paperData: Omit<Paper, 'id' | 'createdAt' | 'updatedAt'>) => {
     const now = Date.now();
     const newPaper: Paper = {
       ...paperData,
@@ -39,24 +39,28 @@ export function PaperStashProvider({ children }: { children: ReactNode }) {
       updatedAt: now,
     };
     setPapers(prev => [newPaper, ...prev]);
-  };
+  }, []);
 
-  const updatePaper = (id: string, updates: Partial<Paper>) => {
+  const updatePaper = useCallback((id: string, updates: Partial<Paper>) => {
     setPapers(prev => 
       prev.map(p => p.id === id ? { ...p, ...updates, updatedAt: Date.now() } : p)
     );
-  };
+  }, []);
 
-  const deletePaper = (id: string) => {
+  const deletePaper = useCallback((id: string) => {
     setPapers(prev => prev.filter(p => p.id !== id));
-  };
+  }, []);
   
-  const resetPaperStash = () => {
+  const resetPaperStash = useCallback(() => {
     setPapers([]);
-  }
+  }, []);
+
+  const value = useMemo(() => ({
+    papers, addPaper, updatePaper, deletePaper, resetPaperStash
+  }), [papers, addPaper, updatePaper, deletePaper, resetPaperStash]);
 
   return (
-    <PaperStashContext.Provider value={{ papers, addPaper, updatePaper, deletePaper, resetPaperStash }}>
+    <PaperStashContext.Provider value={value}>
       {children}
     </PaperStashContext.Provider>
   );

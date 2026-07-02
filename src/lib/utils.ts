@@ -11,7 +11,7 @@ export function getLocalDayNumber() {
   return Math.floor((now.getTime() - offsetMs) / 86400000);
 }
 
-export function safeGetJSON(key: string, defaultValue: any) {
+export function safeGetJSON<T>(key: string, defaultValue: T): T {
   try {
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : defaultValue;
@@ -20,7 +20,7 @@ export function safeGetJSON(key: string, defaultValue: any) {
   }
 }
 
-export function safeSetJSON(key: string, value: any) {
+export function safeSetJSON<T>(key: string, value: T): void {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {}

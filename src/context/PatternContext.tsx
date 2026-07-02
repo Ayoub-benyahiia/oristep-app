@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { OrigamiPattern } from '../types';
 import { fetchPatterns } from '../services/patternService';
 import { PATTERNS as LOCAL_PATTERNS } from '../data';
@@ -19,7 +19,7 @@ export function PatternProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const refreshPatterns = async () => {
+  const refreshPatterns = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -32,17 +32,21 @@ export function PatternProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     refreshPatterns();
-  }, []);
+  }, [refreshPatterns]);
 
-  const getPatternById = (id: string) => patterns.find(p => p.id === id);
-  const getPatternBySlug = (slug: string) => patterns.find(p => p.slug === slug);
+  const getPatternById = useCallback((id: string) => patterns.find(p => p.id === id), [patterns]);
+  const getPatternBySlug = useCallback((slug: string) => patterns.find(p => p.slug === slug), [patterns]);
+
+  const value = useMemo(() => ({
+    patterns, isLoading, error, refreshPatterns, getPatternById, getPatternBySlug
+  }), [patterns, isLoading, error, refreshPatterns, getPatternById, getPatternBySlug]);
 
   return (
-    <PatternContext.Provider value={{ patterns, isLoading, error, refreshPatterns, getPatternById, getPatternBySlug }}>
+    <PatternContext.Provider value={value}>
       {children}
     </PatternContext.Provider>
   );

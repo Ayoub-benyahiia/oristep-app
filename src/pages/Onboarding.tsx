@@ -50,6 +50,8 @@ export function Onboarding({ onComplete }: OnboardingProps) {
     return match;
   }, [level, interests, patterns]);
 
+  const safeRecommended = recommended || patterns[0];
+
   return (
     <div className="absolute inset-0 bg-paper z-[100] overflow-hidden flex flex-col justify-center font-sans text-ink">
       {step > 0 && step < 3 && (
@@ -75,7 +77,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
         >
             {step === 0 && (
               <div className="flex flex-col items-center justify-center h-full text-center px-6">
-                <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center shadow-md border border-crease font-bold text-accent mb-8 rotate-6">
+                <div className="w-24 h-24 bg-paper rounded-[2rem] flex items-center justify-center shadow-md border border-crease font-bold text-accent mb-8 rotate-6">
                   <Origami className="w-12 h-12" />
                 </div>
                 <h1 className="text-4xl font-heading text-ink mb-4">Welcome to Oristep</h1>
@@ -101,7 +103,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                         onClick={() => setLevel(l.id)}
                         className={cn(
                            "w-full text-left p-5 rounded-[1.5rem] border transition-all relative overflow-hidden",
-                           level === l.id ? "bg-accent-soft/30 border-accent shadow-sm" : "bg-white border-crease shadow-sm hover:border-ink/20"
+                           level === l.id ? "bg-accent-soft/30 border-accent shadow-sm" : "bg-paper border-crease shadow-sm hover:border-ink/20"
                         )}
                       >
                         <div className="flex items-center justify-between">
@@ -115,7 +117,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                     ))}
                   </div>
                 </div>
-                <button onClick={goNext} className="w-full py-4 bg-ink text-paper-light rounded-full font-bold uppercase tracking-widest text-[11px] shadow-md hover:bg-ink-dark active:scale-[0.98] transition-all shrink-0 mt-6 mt-auto">
+                <button onClick={goNext} className="w-full py-4 bg-ink text-paper-light rounded-full font-bold uppercase tracking-widest text-[11px] shadow-md hover:bg-ink-dark active:scale-[0.98] transition-all shrink-0 mt-auto">
                   Continue
                 </button>
               </div>
@@ -136,7 +138,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                            onClick={() => setInterests(isSelected ? interests.filter(i => i !== cat.id) : [...interests, cat.id])}
                            className={cn(
                              "aspect-[4/3] sm:aspect-square rounded-[2rem] border p-5 flex flex-col justify-end text-left transition-all",
-                             isSelected ? "bg-ink text-paper-light border-ink shadow-md" : "bg-white border-crease shadow-sm text-ink hover:border-ink/20"
+                             isSelected ? "bg-ink text-paper-light border-ink shadow-md" : "bg-paper border-crease shadow-sm text-ink hover:border-ink/20"
                            )}
                          >
                            <h3 className="font-heading font-semibold text-lg">{cat.title}</h3>
@@ -148,7 +150,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 <button 
                    onClick={goNext} 
                    disabled={interests.length === 0} 
-                   className="w-full py-4 bg-ink text-paper-light rounded-full font-bold uppercase tracking-widest text-[11px] shadow-md hover:bg-ink-dark active:scale-[0.98] transition-all shrink-0 mt-6 mt-auto disabled:opacity-30 disabled:hover:bg-ink disabled:active:scale-100"
+                   className="w-full py-4 bg-ink text-paper-light rounded-full font-bold uppercase tracking-widest text-[11px] shadow-md hover:bg-ink-dark active:scale-[0.98] transition-all shrink-0 mt-auto disabled:opacity-30 disabled:hover:bg-ink disabled:active:scale-100"
                 >
                   See Recommendation
                 </button>
@@ -157,44 +159,52 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
             {step === 3 && (
               <div className="flex flex-col h-full px-6 pt-12 pb-8">
-                <div className="flex-1 text-center">
-                  <div className="inline-block px-3 py-1 bg-accent-soft text-accent text-[10px] font-bold uppercase tracking-widest rounded-full mb-6 mx-auto border border-crease-light shadow-sm">
-                    Your Recommended Fold
+                {!safeRecommended ? (
+                  <div className="flex-1 flex items-center justify-center text-center">
+                    <p className="text-ink-light text-sm font-medium">No patterns available yet. Try exploring the library!</p>
                   </div>
-                  
-                  <div className="bg-white rounded-[2.5rem] border border-crease shadow-sm overflow-hidden text-left mb-8 mx-auto w-full max-w-sm">
-                     <div className="aspect-[4/3] bg-paper-light relative">
-                        <div className="absolute inset-0 opacity-40" style={{ background: recommended.imagePlaceholder }} />
-                        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur pb-1 px-3 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-widest text-ink shadow-sm border border-white/50">
-                           {recommended.difficulty}
-                        </div>
-                     </div>
-                     <div className="p-6">
-                        <h3 className="text-2xl font-heading text-ink mb-2 line-clamp-1">{recommended.title}</h3>
-                        <p className="text-[13px] font-medium text-ink-light line-clamp-2 leading-relaxed">{recommended.description}</p>
-                        <div className="flex items-center space-x-4 mt-6 pt-5 border-t border-crease-light text-[11px] uppercase font-bold tracking-widest text-ink-light">
-                           <span>{recommended.estimatedTimeMinutes} min</span>
-                           <span className="w-1 h-1 rounded-full bg-crease" />
-                           <span>{recommended.totalSteps} steps</span>
-                        </div>
-                     </div>
-                  </div>
-                </div>
+                ) : (
+                  <>
+                    <div className="flex-1 text-center">
+                      <div className="inline-block px-3 py-1 bg-accent-soft text-accent text-[10px] font-bold uppercase tracking-widest rounded-full mb-6 mx-auto border border-crease-light shadow-sm">
+                        Your Recommended Fold
+                      </div>
+                      
+                      <div className="bg-paper rounded-[2.5rem] border border-crease shadow-sm overflow-hidden text-left mb-8 mx-auto w-full max-w-sm">
+                         <div className="aspect-[4/3] bg-paper-light relative">
+                            <div className="absolute inset-0 opacity-40" style={{ background: safeRecommended.imagePlaceholder }} />
+                            <div className="absolute bottom-3 left-3 bg-paper/90 backdrop-blur pb-1 px-3 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-widest text-ink shadow-sm border border-paper/50">
+                               {safeRecommended.difficulty}
+                            </div>
+                         </div>
+                         <div className="p-6">
+                            <h3 className="text-2xl font-heading text-ink mb-2 line-clamp-1">{safeRecommended.title}</h3>
+                            <p className="text-[13px] font-medium text-ink-light line-clamp-2 leading-relaxed">{safeRecommended.description}</p>
+                            <div className="flex items-center space-x-4 mt-6 pt-5 border-t border-crease-light text-[11px] uppercase font-bold tracking-widest text-ink-light">
+                               <span>{safeRecommended.estimatedTimeMinutes} min</span>
+                               <span className="w-1 h-1 rounded-full bg-crease" />
+                               <span>{safeRecommended.totalSteps} steps</span>
+                            </div>
+                         </div>
+                      </div>
+                    </div>
 
-                <div className="space-y-3 shrink-0 mt-6">
-                  <button 
-                    onClick={() => handleFinish(`/fold/${recommended.slug}`)} 
-                    className="w-full py-4 bg-accent text-paper rounded-full font-bold uppercase tracking-widest text-[11px] shadow-md hover:bg-accent-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                  >
-                    Start Folding <ArrowRight className="w-4 h-4 ml-1" />
-                  </button>
-                  <button 
-                    onClick={() => handleFinish('/browse')} 
-                    className="w-full py-4 bg-transparent text-ink-light rounded-full font-bold uppercase tracking-widest text-[11px] hover:text-ink transition-colors"
-                  >
-                    Explore Library
-                  </button>
-                </div>
+                    <div className="space-y-3 shrink-0 mt-6">
+                      <button 
+                        onClick={() => handleFinish(`/fold/${safeRecommended.slug}`)} 
+                        className="w-full py-4 bg-accent text-paper rounded-full font-bold uppercase tracking-widest text-[11px] shadow-md hover:bg-accent-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                      >
+                        Start Folding <ArrowRight className="w-4 h-4 ml-1" />
+                      </button>
+                      <button 
+                        onClick={() => handleFinish('/browse')} 
+                        className="w-full py-4 bg-transparent text-ink-light rounded-full font-bold uppercase tracking-widest text-[11px] hover:text-ink transition-colors"
+                      >
+                        Explore Library
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             )}
         </div>
