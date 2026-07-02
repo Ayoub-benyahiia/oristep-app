@@ -18,6 +18,7 @@ const FoldMode = lazy(() => import('./pages/FoldMode').then(m => ({ default: m.F
 const Projects = lazy(() => import('./pages/Projects').then(m => ({ default: m.Projects })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
 const PaperStash = lazy(() => import('./pages/PaperStash').then(m => ({ default: m.PaperStash })));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 
 const IS_DEV = import.meta.env.DEV;
 
@@ -111,6 +112,7 @@ function AppContent() {
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/stash" element={<PaperStash />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<Home />} />
               </Routes>
             </Suspense>

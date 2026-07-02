@@ -28,7 +28,6 @@ export function Settings() {
   const { theme, setTheme } = useTheme();
 
   const [onboardingData, setOnboardingData] = useState<{level: string, interests: string[]} | null>(null);
-  const [showPrivacy, setShowPrivacy] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showContact, setShowContact] = useState(false);
 
@@ -221,7 +220,7 @@ export function Settings() {
           </div>
           <ChevronRight className="w-5 h-5 text-ink-light/50" />
         </button>
-        <button onClick={() => setShowPrivacy(true)} className="w-full p-5 flex items-center justify-between hover:bg-paper-light transition-colors text-left group">
+        <Link to="/privacy-policy" className="w-full p-5 flex items-center justify-between hover:bg-paper-light transition-colors text-left group">
           <div className="flex items-center space-x-4">
             <div className="w-10 h-10 rounded-full bg-paper-light flex items-center justify-center text-ink border border-transparent group-hover:border-crease-light transition-colors">
               <Shield className="w-5 h-5" />
@@ -229,7 +228,7 @@ export function Settings() {
             <p className="font-bold text-sm text-ink">Privacy Policy</p>
           </div>
           <ChevronRight className="w-5 h-5 text-ink-light/50" />
-        </button>
+        </Link>
         <button onClick={() => setShowContact(true)} className="w-full p-5 flex items-center justify-between hover:bg-paper-light transition-colors text-left group">
           <div className="flex items-center space-x-4">
             <div className="w-10 h-10 rounded-full bg-paper-light flex items-center justify-center text-ink border border-transparent group-hover:border-crease-light transition-colors">
@@ -301,45 +300,7 @@ export function Settings() {
         )}
       </AnimatePresence>
 
-      {/* Privacy Modal */}
-      <AnimatePresence>
-        {showPrivacy && (
-          <motion.div
-            initial={{ opacity: 0, y: '100%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '100%' }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[200] bg-paper-light flex flex-col md:rounded-[2.5rem] md:overflow-hidden"
-          >
-            <div className="shrink-0 w-full px-6 py-5 flex items-center justify-between bg-paper-light/90 backdrop-blur-md z-10 border-b border-crease-light">
-               <h2 className="font-heading text-xl text-ink">Privacy Policy</h2>
-               <button 
-                 onClick={() => setShowPrivacy(false)}
-                 className="w-10 h-10 rounded-full bg-paper flex items-center justify-center text-ink shadow-sm border border-crease-light active:scale-95 transition-all"
-               >
-                 <X className="w-5 h-5" />
-               </button>
-            </div>
-            <div className="flex-1 overflow-y-auto px-6 py-8">
-              <div className="max-w-md mx-auto w-full space-y-6 text-[15px] leading-relaxed font-medium text-ink-light">
-                <div className="w-16 h-16 rounded-[1.5rem] bg-paper border border-crease shadow-sm flex items-center justify-center text-ink mb-8">
-                   <Shield className="w-8 h-8" />
-                </div>
-                
-                <PrivacyPolicyContent />
-              </div>
-            </div>
 
-            <div className="shrink-0 p-6 bg-paper-light border-t border-crease-light">
-              <div className="max-w-md mx-auto w-full">
-                <button onClick={() => setShowPrivacy(false)}
-                  className="w-full py-4 bg-ink text-paper-light rounded-[1.5rem] font-bold tracking-widest uppercase text-xs shadow-xl border border-crease hover:bg-ink-dark transition-all"
-                >Understood</button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
